@@ -1,4 +1,5 @@
 import os
+import json
 import pickle
 import argparse
 import tensorflow as tf
@@ -27,3 +28,5 @@ def sample_stroke():
   return [strokes, params]
 
 [strokes, params] = sample_stroke()
+with open('sample.json', 'w') as f:
+    json.dump(strokes.tolist(), f)
