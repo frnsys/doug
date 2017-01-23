@@ -23,7 +23,7 @@ for fname in glob('svg/*.svg'):
         data = ch.attrib['d']
         path = parse_path(data)
         for segment in path:
-            points = [to_coord(segment.point(x)) for x in np.arange(0, 1, step_size)]
+            points = [to_coord(segment.point(x)) for x in np.arange(0, 1 + step_size, step_size)]
             strokes.append(points)
 
     # draw it out
@@ -59,7 +59,7 @@ for fname in glob('svg/*.svg'):
     dataset.append(data)
     with open('json/{}.json'.format(title), 'w') as f:
         json.dump(data, f)
-    print('{} steps'.format(len(data)))
+    print('{}: {} steps'.format(title, len(data)))
 
 with open('json/dataset.json', 'w') as f:
     json.dump(dataset, f)
