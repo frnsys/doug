@@ -19,7 +19,8 @@ class Model():
     else:
       raise Exception("model type not supported: {}".format(args.model))
 
-    cell = cell_fn(args.rnn_size, state_is_tuple=False)
+    # cell = cell_fn(args.rnn_size, state_is_tuple=False)
+    cell = cell_fn(args.rnn_size)
 
     cell = tf.nn.rnn_cell.MultiRNNCell(
             [cell] * args.num_layers,

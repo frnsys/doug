@@ -8,7 +8,7 @@ from model import Model
 # main code (not in a main function since I want to run this script in IPython as well).
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--sample_length', type=int, default=800,
+parser.add_argument('--sample_length', type=int, default=40,
                    help='number of strokes to sample')
 sample_args = parser.parse_args()
 

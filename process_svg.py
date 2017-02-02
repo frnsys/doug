@@ -3,17 +3,24 @@ import json
 import numpy as np
 from glob import glob
 from lxml import etree
+from math import isclose
 from PIL import Image, ImageDraw
 from svgpathtools import parse_path
 
 ns = '{http://www.w3.org/2000/svg}'
-step_size = 0.05
+step_size = 0.2
 
 def to_coord(complex):
     return complex.real, complex.imag
 
+def approx_eq(a, b):
+    xa, ya = a
+    xb, yb = b
+    return isclose(xa, xb) and isclose(ya, yb)
+
 dataset = []
-for fname in glob('svg/*.svg'):
+# for fname in glob('svg/*.svg'):
+for fname in glob('svg/circle.svg'):
     strokes = []
     title, _ = os.path.basename(fname).rsplit('.', 1)
     svg = etree.parse(fname).getroot()
@@ -24,7 +31,12 @@ for fname in glob('svg/*.svg'):
         path = parse_path(data)
         for segment in path:
             points = [to_coord(segment.point(x)) for x in np.arange(0, 1 + step_size, step_size)]
-            strokes.append(points)
+
+            # merge strokes that are essentially one stroke
+            if strokes and approx_eq(strokes[-1][-1], points[0]):
+                strokes[-1].extend(points[1:])
+            else:
+                strokes.append(points)
 
     # draw it out
     im = Image.new('RGB', (2000, 2000))
@@ -56,7 +68,8 @@ for fname in glob('svg/*.svg'):
             delta_x, delta_y = ex - sx, ey - sy
             data.append((delta_x, delta_y, 1))
 
-    dataset.append(data)
+    for _ in range(100):
+        dataset.append(data)
     with open('json/{}.json'.format(title), 'w') as f:
         json.dump(data, f)
     print('{}: {} steps'.format(title, len(data)))

@@ -12,15 +12,15 @@ def main():
                      help='size of RNN hidden state')
   parser.add_argument('--num_layers', type=int, default=2,
                      help='number of layers in the RNN')
-  parser.add_argument('--model', type=str, default='lstm',
+  parser.add_argument('--model', type=str, default='gru',
                      help='rnn, gru, or lstm')
-  parser.add_argument('--batch_size', type=int, default=50,
+  parser.add_argument('--batch_size', type=int, default=8,
                      help='minibatch size')
-  parser.add_argument('--seq_length', type=int, default=300,
+  parser.add_argument('--seq_length', type=int, default=20-(2+1),
                      help='RNN sequence length')
-  parser.add_argument('--num_epochs', type=int, default=30,
+  parser.add_argument('--num_epochs', type=int, default=2000,
                      help='number of epochs')
-  parser.add_argument('--save_every', type=int, default=500,
+  parser.add_argument('--save_every', type=int, default=1000,
                      help='save frequency')
   parser.add_argument('--grad_clip', type=float, default=10.,
                      help='clip gradients at this value')
@@ -30,7 +30,7 @@ def main():
                      help='decay rate for rmsprop')
   parser.add_argument('--num_mixture', type=int, default=20,
                      help='number of gaussian mixtures')
-  parser.add_argument('--data_scale', type=float, default=20,
+  parser.add_argument('--data_scale', type=float, default=10,
                      help='factor to scale raw data down by')
   parser.add_argument('--keep_prob', type=float, default=0.8,
                      help='dropout keep probability')
@@ -47,7 +47,7 @@ def train(args):
 
     with tf.Session() as sess:
         tf.global_variables_initializer().run()
-        saver = tf.train.Saver(tf.all_variables())
+        saver = tf.train.Saver(tf.global_variables())
         for e in range(args.num_epochs):
             sess.run(tf.assign(model.lr, args.learning_rate * (args.decay_rate ** e)))
             data_loader.reset_batch_pointer()

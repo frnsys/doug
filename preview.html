@@ -21,7 +21,8 @@
 var drawScale = 4,
     fps = 60,
     file = location.hash.substring(1) || '../neuralnet/sample.json',
-    draw_data, width, height, last_point;
+    draw_data, width, height, last_point,
+    steps = 0;
 
 function setup() {
     width = window.innerWidth;
@@ -30,7 +31,6 @@ function setup() {
     $.getJSON('json/' + file, {}, function(data) {
         draw_data = data;
     });
-    stroke(255);
     frameRate(fps);
 }
 
@@ -45,15 +45,26 @@ function step(d) {
 function draw() {
     if (draw_data && draw_data.length > 0) {
         if (!last_point) {
+            // start from center
             last_point = {x: width/2, y: height/2};
         }
+
+        fill(255, 0, 0);
+        ellipse(last_point.x, last_point.y, 10);
+        fill(255);
+        text(steps, last_point.x, last_point.y);
+        noFill();
+        steps++;
+
         var stp = step(draw_data.shift());
         var next_point = {
             x: last_point.x + stp.x,
             y: last_point.y + stp.y
         };
         if (stp.stroke_end === 0) {
+            stroke(255);
             line(last_point.x, last_point.y, next_point.x, next_point.y);
+            noStroke();
         }
         last_point = next_point;
     }
