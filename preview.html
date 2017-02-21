@@ -18,20 +18,52 @@
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/p5.js"></script>
 <script>
-var drawScale = 4,
+var drawScale = 1,
     fps = 60,
+    showPoints = false,
+    showStep = false,
+    drawn = [],
     file = location.hash.substring(1) || '../neuralnet/sample.json',
-    draw_data, width, height, last_point,
-    steps = 0;
+    draw_data, width, height, last_point, canvas,
+    steps = 0,
+    mouseDown = false,
+    dragLastPos = [0,0],
+    dragStartPos = [],
+    offset = {x:0, y:0};
 
 function setup() {
     width = window.innerWidth;
     height = window.innerHeight;
-    createCanvas(width, height);
+    canvas = createCanvas(width, height);
     $.getJSON('json/' + file, {}, function(data) {
         draw_data = data;
     });
     frameRate(fps);
+
+    $(canvas.elt)
+        .on('mousedown', function(e) {
+            mouseDown = true;
+            dragStartPos = [
+                e.offsetX - dragLastPos[0],
+                e.offsetY - dragLastPos[1]
+            ];
+        })
+        .on('mouseup', function(e) {
+            mouseDown = false;
+            dragLastPos = [
+                e.offsetX - dragStartPos[0],
+                e.offsetY - dragStartPos[1]
+            ];
+        })
+        .on('mousemove', function(e) {
+            if (!mouseDown) return;
+            var x = e.offsetX,
+                y = e.offsetY;
+            offset = {
+                x: x-dragStartPos[0],
+                y: y-dragStartPos[1]
+            };
+        });
 }
 
 function step(d) {
@@ -43,17 +75,43 @@ function step(d) {
 }
 
 function draw() {
+    clear();
+
+    textSize(8);
+    for (var i=1; i<drawn.length; i++) {
+        var lst = drawn[i-1],
+            nxt = drawn[i];
+        stroke(255);
+        line(
+            lst.x + offset.x, lst.y + offset.y,
+            nxt.x + offset.x, nxt.y + offset.y);
+        noStroke();
+
+        if (showPoints) {
+            fill(255, 0, 0);
+            ellipse(lst.x + offset.x, lst.y + offset.y, 2*drawScale);
+            fill(255);
+
+            // only number every 10th point
+            if (showStep && i % 10 === 1) {
+                text(i-1, lst.x + offset.x, lst.y + offset.y);
+            }
+        }
+    }
+
     if (draw_data && draw_data.length > 0) {
         if (!last_point) {
             // start from center
             last_point = {x: width/2, y: height/2};
+            drawn.push(last_point);
         }
 
         fill(255, 0, 0);
-        ellipse(last_point.x, last_point.y, 10);
+        ellipse(last_point.x + offset.x, last_point.y + offset.y, 4*drawScale);
         fill(255);
-        text(steps, last_point.x, last_point.y);
+        text(steps, last_point.x + offset.x, last_point.y + offset.y);
         noFill();
+
         steps++;
 
         var stp = step(draw_data.shift());
@@ -61,9 +119,12 @@ function draw() {
             x: last_point.x + stp.x,
             y: last_point.y + stp.y
         };
+        drawn.push(next_point);
         if (stp.stroke_end === 0) {
             stroke(255);
-            line(last_point.x, last_point.y, next_point.x, next_point.y);
+            line(
+                last_point.x + offset.x, last_point.y + offset.y,
+                next_point.x + offset.x, next_point.y + offset.y);
             noStroke();
         }
         last_point = next_point;

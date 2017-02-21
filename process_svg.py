@@ -6,6 +6,7 @@ from lxml import etree
 from math import isclose
 from PIL import Image, ImageDraw
 from svgpathtools import parse_path
+from parallel import parallel_process
 
 ns = '{http://www.w3.org/2000/svg}'
 step_size = 0.2
@@ -18,9 +19,8 @@ def approx_eq(a, b):
     xb, yb = b
     return isclose(xa, xb) and isclose(ya, yb)
 
-dataset = []
-# for fname in glob('svg/*.svg'):
-for fname in glob('svg/circle.svg'):
+
+def process_svg(fname, preview=False):
     strokes = []
     title, _ = os.path.basename(fname).rsplit('.', 1)
     svg = etree.parse(fname).getroot()
@@ -39,14 +39,15 @@ for fname in glob('svg/circle.svg'):
                 strokes.append(points)
 
     # draw it out
-    im = Image.new('RGB', (2000, 2000))
-    draw = ImageDraw.Draw(im)
-    for stroke in strokes:
-        for start, end in zip(stroke, stroke[1:]):
-            if start == end:
-                continue
-            draw.line([start, end], fill=(255, 255, 255))
-    im.save('preview/{}.png'.format(title), 'PNG')
+    if preview:
+        im = Image.new('RGB', (2000, 2000))
+        draw = ImageDraw.Draw(im)
+        for stroke in strokes:
+            for start, end in zip(stroke, stroke[1:]):
+                if start == end:
+                    continue
+                draw.line([start, end], fill=(255, 255, 255))
+        im.save('preview/{}.png'.format(title), 'PNG')
 
     # convert to offsets and end-of-stroke
     # where 1 -> the last point in the stroke
@@ -67,12 +68,18 @@ for fname in glob('svg/circle.svg'):
             ex, ey = stroke_start
             delta_x, delta_y = ex - sx, ey - sy
             data.append((delta_x, delta_y, 1))
+    return data
 
-    for _ in range(100):
-        dataset.append(data)
-    with open('json/{}.json'.format(title), 'w') as f:
-        json.dump(data, f)
-    print('{}: {} steps'.format(title, len(data)))
 
-with open('json/dataset.json', 'w') as f:
-    json.dump(dataset, f)
+def process_svgs(dir, outdir):
+    dataset = parallel_process(glob('{}/*.svg'.format(dir)), process_svg)
+    steps = [len(d) for d in dataset]
+
+    outf = '{}/dataset.json'.format(outdir)
+    with open(outf, 'w') as f:
+        json.dump(dataset, f)
+
+    print('max steps:', max(steps))
+    print('min steps:', min(steps))
+    print('avg steps:', sum(steps)/len(steps))
+    return outf, steps

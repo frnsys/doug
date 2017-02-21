@@ -1,7 +1,16 @@
 import math
 import random
 import numpy as np
+from parallel import parallel_process
 from svgpathtools import Path, Line, wsvg
+
+n_samples = 200
+m1, m2, n1 = 2, 10, 1.5
+rand_range = [1, 1, 1]
+
+
+def rand(rng):
+    return random.random() * (rng * 2) - rng
 
 
 def pol2cart(theta, rho):
@@ -18,16 +27,8 @@ def superformula(m1, m2, n1, a=1, b=1, n2=1, n3=1):
         return math.pow(cs + sn, -(1/n1))
     return fn
 
-
-n_samples = 1000
-m1, m2, n1 = 2, 10, -1.5
-
-generated = []
-for i in range(n_samples):
-    sf = superformula(
-        m1 + random.random(),
-        m2 + random.random(),
-        n1 + random.random())
+def generate_svg(i, m1, m2, n1):
+    sf = superformula(m1, m2, n1)
     polar_pts = [(ang, sf(ang)) for ang in np.arange(0, 2*math.pi, 0.1)]
     carte_pts = [pol2cart(ang, rho) for ang, rho in polar_pts]
 
@@ -42,7 +43,14 @@ for i in range(n_samples):
 
     fname = 'generated/{}.svg'.format(i)
     wsvg(paths, filename=fname)
-    generated.append(fname)
+    return fname
+
+generated = parallel_process([{
+    'i': i,
+    'm1': m1 + rand(rand_range[0]),
+    'm2': m2 + rand(rand_range[1]),
+    'n1': n1 + rand(rand_range[2]),
+} for i in range(n_samples)], generate_svg, use_kwargs=True)
 
 html_template = '''
 <!doctype html>

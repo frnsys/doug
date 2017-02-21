@@ -4,13 +4,12 @@ import numpy as np
 
 
 class DataLoader():
-  def __init__(self, batch_size=50, seq_length=300, scale_factor = 10, limit = 500):
+  def __init__(self, data_file, batch_size=50, seq_length=300, scale_factor = 10, limit = 500):
     self.batch_size = batch_size
     self.seq_length = seq_length
     self.scale_factor = scale_factor # divide data by this factor
     self.limit = limit # removes large noisy gaps in the data
 
-    data_file = '../json/dataset.json'
     dataset = json.load(open(data_file, 'r'))
     self.load_preprocessed(dataset)
     self.reset_batch_pointer()
