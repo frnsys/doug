@@ -23,7 +23,7 @@ var drawScale = 1,
     showPoints = false,
     showStep = false,
     drawn = [],
-    file = location.hash.substring(1) || '../neuralnet/sample.json',
+    file = location.hash.substring(1) || '0000.json',
     draw_data, width, height, last_point, canvas,
     steps = 0,
     mouseDown = false,
@@ -35,7 +35,7 @@ function setup() {
     width = window.innerWidth;
     height = window.innerHeight;
     canvas = createCanvas(width, height);
-    $.getJSON('json/' + file, {}, function(data) {
+    $.getJSON('drawings/' + file, {}, function(data) {
         draw_data = data;
     });
     frameRate(fps);

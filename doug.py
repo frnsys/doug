@@ -49,7 +49,7 @@ def draw(name, seq_length):
     strokes, params = neuralnet.sample(save_dir, seq_length)
 
     n_drawings = len(glob('drawings/*.json'))
-    with open('drawings/{}.json'.format(n_drawings), 'w') as f:
+    with open('drawings/{:02d}.json'.format(n_drawings), 'w') as f:
         json.dump(strokes.tolist(), f)
 
 

@@ -1,6 +1,18 @@
-- dump svgs into `svg/`
-- run `process_svg.py`. this will generate JSON data representing stroke movements that are used to train the neural net.
-- `cd` into `neuralnet` and run `train.py` to train the neural net.
-- then run `sample.py` to generate `sample.json`, a sample drawing from the net
+# usage
 
-To view a preview drawn from the JSON stroke data, open `preview.html`. Append `#filename.json` to it to load a particular file. If you don't specify a file, it will load the `sample.json` produced by the net.
+First you have to train a drawing model:
+
+    ./doug.py train [model name] [svg folder]
+
+    # example
+    ./doug.py train calligraphy calligraphy_svgs
+
+Then you can use that model to generate drawing data:
+
+    # after training a model
+    ./doug.py draw [model name] [number of points]
+
+    # example
+    ./doug.py draw calligraphy 1000
+
+To view a preview drawn from the JSON stroke data, open `preview.html`. Append `#filename.json` to it to load a particular file in the `drawings` folder. If you don't specify a file, it will try to load `drawings/0000.json`.
