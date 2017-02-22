@@ -1,10 +1,10 @@
+import sys
 import math
 import random
 import numpy as np
 from parallel import parallel_process
 from svgpathtools import Path, Line, wsvg
 
-n_samples = 200
 m1, m2, n1 = 2, 10, 1.5
 rand_range = [1, 1, 1]
 
@@ -45,28 +45,30 @@ def generate_svg(i, m1, m2, n1):
     wsvg(paths, filename=fname)
     return fname
 
-generated = parallel_process([{
-    'i': i,
-    'm1': m1 + rand(rand_range[0]),
-    'm2': m2 + rand(rand_range[1]),
-    'n1': n1 + rand(rand_range[2]),
-} for i in range(n_samples)], generate_svg, use_kwargs=True)
+if __name__ == '__main__':
+    n_samples = sys.argv[1]
+    generated = parallel_process([{
+        'i': i,
+        'm1': m1 + rand(rand_range[0]),
+        'm2': m2 + rand(rand_range[1]),
+        'n1': n1 + rand(rand_range[2]),
+    } for i in range(n_samples)], generate_svg, use_kwargs=True)
 
-html_template = '''
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>generated svgs</title>
-  </head>
-  <body>
-    {images}
-  </body>
-</html>
-'''
+    html_template = '''
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>generated svgs</title>
+    </head>
+    <body>
+        {images}
+    </body>
+    </html>
+    '''
 
-with open('generated/index.html', 'w') as f:
-    images = ['<img src="../{}">'.format(fname) for fname in generated]
-    html = html_template.format(images='\n'.join(images))
-    f.write(html)
+    with open('generated/index.html', 'w') as f:
+        images = ['<img src="../{}">'.format(fname) for fname in generated]
+        html = html_template.format(images='\n'.join(images))
+        f.write(html)
