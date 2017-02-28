@@ -3,7 +3,6 @@ import json
 import numpy as np
 from glob import glob
 from lxml import etree
-from math import isclose
 from PIL import Image, ImageDraw
 from svgpathtools import parse_path
 from parallel import parallel_process
@@ -17,7 +16,7 @@ def to_coord(complex):
 def approx_eq(a, b):
     xa, ya = a
     xb, yb = b
-    return isclose(xa, xb) and isclose(ya, yb)
+    return np.isclose(xa, xb) and np.isclose(ya, yb)
 
 
 def process_svg(fname, preview=False):
