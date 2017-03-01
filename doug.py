@@ -27,10 +27,12 @@ def train(name, svg_dir, epochs):
 
     print('preparing data...')
     dataf, steps = process_svgs(svg_dir, dataset_dir)
+    seq_length = min(steps) - (2+1)
+    print('  seq length:', seq_length)
 
     print('training (this may take awhile)...')
     neuralnet.train(save_dir, dataf, {
-        'seq_length': min(steps) - (2+1),
+        'seq_length': seq_length,
         'num_epochs': epochs,
         'save_every': int(epochs/5)
     })
@@ -41,16 +43,18 @@ def train(name, svg_dir, epochs):
 @cli.command()
 @click.argument('name')
 @click.argument('seq_length', type=click.INT)
-def draw(name, seq_length):
+@click.option('-n', '--n', help='number of drawings', default=1)
+def draw(name, seq_length, n):
     save_dir = 'models/{}'.format(name)
     if not os.path.isdir(save_dir):
         print('model "{}" hasn\'t been trained'.format(name))
         return
-    strokes, params = neuralnet.sample(save_dir, seq_length)
 
-    n_drawings = len(glob('drawings/*.json'))
-    with open('drawings/{:02d}.json'.format(n_drawings), 'w') as f:
-        json.dump(strokes.tolist(), f)
+    samples = neuralnet.sample(save_dir, seq_length, n)
+    for strokes in samples:
+        n_drawings = len(glob('drawings/{}_*.json'.format(name)))
+        with open('drawings/{}_{:02d}.json'.format(name, n_drawings), 'w') as f:
+            json.dump(strokes.tolist(), f)
 
 
 if __name__ == '__main__':

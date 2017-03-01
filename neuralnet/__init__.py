@@ -7,7 +7,7 @@ from .model import Model
 from .utils import DataLoader
 
 
-def sample(model_dir, seq_length=40):
+def sample(model_dir, seq_length=40, n=1):
     with open(os.path.join(model_dir, 'config.pkl'), 'rb') as f:
         saved_args = pickle.load(f)
     model = Model(saved_args, True)
@@ -17,8 +17,11 @@ def sample(model_dir, seq_length=40):
     print("loading model: ", ckpt.model_checkpoint_path)
     saver.restore(sess, ckpt.model_checkpoint_path)
 
-    strokes, params = model.sample(sess, seq_length)
-    return strokes, params
+    samples = []
+    for _ in range(n):
+        strokes, params = model.sample(sess, seq_length)
+        samples.append(strokes)
+    return samples
 
 
 def train(save_dir, data_file, config):
@@ -64,6 +67,7 @@ def train(save_dir, data_file, config):
     with tf.Session() as sess:
         tf.global_variables_initializer().run()
         saver = tf.train.Saver(tf.global_variables())
+        print('here we go')
         for e in range(args.num_epochs):
             sess.run(tf.assign(model.lr, args.learning_rate * (args.decay_rate ** e)))
             data_loader.reset_batch_pointer()
