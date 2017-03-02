@@ -14,13 +14,16 @@ from process_svg import process_svgs
 def cli(): pass
 
 
+# if you get nan, try increasing the scale
 @cli.command()
 @click.argument('name')
 @click.argument('svg_dir')
 @click.option('-e', '--epochs', help='epochs to train for', default=1000)
 @click.option('-b', '--batch_size', help='batch size', default=32)
-@click.option('-s', '--step_size', help='step size for chunking the svg', default=0.2)
-def train(name, svg_dir, epochs, step_size):
+@click.option('-s', '--scale', help='factor to scale raw data down by', default=20)
+@click.option('-l', '--learning_rate', help='learning rate', default=0.005)
+@click.option('-z', '--step_size', help='step size for chunking the svg', default=0.2)
+def train(name, svg_dir, epochs, batch_size, scale, learning_rate, step_size):
     save_dir = 'models/{}'.format(name)
     dataset_dir = '/tmp/svg_dataset'
     for dir in [save_dir, dataset_dir]:
@@ -37,7 +40,10 @@ def train(name, svg_dir, epochs, step_size):
     neuralnet.train(save_dir, dataf, {
         'seq_length': seq_length,
         'num_epochs': epochs,
-        'save_every': int(epochs/5)
+        'save_every': int(epochs/5),
+        'learning_rate': learning_rate,
+        'data_scale': scale,
+        'batch_size': batch_size
     })
 
     print('done training model "{}"!'.format(name))

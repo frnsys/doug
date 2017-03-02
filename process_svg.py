@@ -3,8 +3,11 @@ import json
 import numpy as np
 from glob import glob
 from lxml import etree
+<<<<<<< HEAD
 from math import isclose
 from functools import partial
+=======
+>>>>>>> d92c31081572e95b4605076db95c81ecccc4279f
 from PIL import Image, ImageDraw
 from svgpathtools import parse_path
 from parallel import parallel_process
@@ -17,7 +20,7 @@ def to_coord(complex):
 def approx_eq(a, b):
     xa, ya = a
     xb, yb = b
-    return isclose(xa, xb) and isclose(ya, yb)
+    return np.isclose(xa, xb) and np.isclose(ya, yb)
 
 
 def process_svg(fname, step_size=0.2, preview=False):
