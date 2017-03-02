@@ -5,6 +5,7 @@ import json
 import click
 import shutil
 import neuralnet
+from tqdm import tqdm
 from glob import glob
 from process_svg import process_svgs
 
@@ -17,7 +18,9 @@ def cli(): pass
 @click.argument('name')
 @click.argument('svg_dir')
 @click.option('-e', '--epochs', help='epochs to train for', default=1000)
-def train(name, svg_dir, epochs):
+@click.option('-b', '--batch_size', help='batch size', default=32)
+@click.option('-s', '--step_size', help='step size for chunking the svg', default=0.2)
+def train(name, svg_dir, epochs, step_size):
     save_dir = 'models/{}'.format(name)
     dataset_dir = '/tmp/svg_dataset'
     for dir in [save_dir, dataset_dir]:
@@ -51,7 +54,7 @@ def draw(name, seq_length, n):
         return
 
     samples = neuralnet.sample(save_dir, seq_length, n)
-    for strokes in samples:
+    for strokes in tqdm(samples, total=n):
         n_drawings = len(glob('drawings/{}_*.json'.format(name)))
         with open('drawings/{}_{:02d}.json'.format(name, n_drawings), 'w') as f:
             json.dump(strokes.tolist(), f)

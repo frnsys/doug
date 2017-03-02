@@ -4,12 +4,12 @@ import numpy as np
 from glob import glob
 from lxml import etree
 from math import isclose
+from functools import partial
 from PIL import Image, ImageDraw
 from svgpathtools import parse_path
 from parallel import parallel_process
 
 ns = '{http://www.w3.org/2000/svg}'
-step_size = 0.2
 
 def to_coord(complex):
     return complex.real, complex.imag
@@ -20,7 +20,7 @@ def approx_eq(a, b):
     return isclose(xa, xb) and isclose(ya, yb)
 
 
-def process_svg(fname, preview=False):
+def process_svg(fname, step_size=0.2, preview=False):
     strokes = []
     title, _ = os.path.basename(fname).rsplit('.', 1)
     svg = etree.parse(fname).getroot()
@@ -71,8 +71,8 @@ def process_svg(fname, preview=False):
     return data
 
 
-def process_svgs(dir, outdir):
-    dataset = parallel_process(glob('{}/*.svg'.format(dir)), process_svg)
+def process_svgs(dir, outdir, step_size):
+    dataset = parallel_process(glob('{}/*.svg'.format(dir)), partial(process_svg, step_size=step_size))
     steps = [len(d) for d in dataset]
 
     outf = '{}/dataset.json'.format(outdir)
