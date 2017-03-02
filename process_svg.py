@@ -3,11 +3,7 @@ import json
 import numpy as np
 from glob import glob
 from lxml import etree
-<<<<<<< HEAD
-from math import isclose
 from functools import partial
-=======
->>>>>>> d92c31081572e95b4605076db95c81ecccc4279f
 from PIL import Image, ImageDraw
 from svgpathtools import parse_path
 from parallel import parallel_process
