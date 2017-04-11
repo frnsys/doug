@@ -40,6 +40,10 @@ class DataLoader():
     self.num_batches = int(counter / self.batch_size)
     print('num batches:', self.num_batches)
 
+    if self.num_batches == 0:
+        print('no batches! try a lower batch size, e.g. `--batch_size 4`')
+        raise Exception
+
   def next_batch(self):
     # returns a randomised, seq_length sized portion of the training data
     x_batch = []
