@@ -30,19 +30,18 @@ class DataLoader():
         counter += int(len(data)/((self.seq_length+2))) # number of equiv batches this datapoint is worth
 
     print('~~~~~')
-    print(len(data))
-    print(self.seq_length+2)
-    print(counter)
-    print(self.batch_size)
-    print('~~~~~')
+    print('batches:', counter)
+    print('batch size:', self.batch_size)
 
     # minus 1, since we want the ydata to be a shifted version of x data
     self.num_batches = int(counter / self.batch_size)
     print('num batches:', self.num_batches)
+    print('~~~~~')
 
     if self.num_batches == 0:
         print('no batches! try a lower batch size, e.g. `--batch_size 4`')
         raise Exception
+
 
   def next_batch(self):
     # returns a randomised, seq_length sized portion of the training data
