@@ -17,4 +17,13 @@ Then you can use that model to generate drawing data:
 
 To view a preview drawn from the JSON stroke data, open `preview.html`. Append `#filename.json` to it to load a particular file in the `drawings` folder. If you don't specify a file, it will try to load `drawings/0000.json`.
 
+---
+
 <https://commons.wikimedia.org/w/index.php?title=Special:Search&limit=500&offset=0&profile=default&search=line+drawing+svg&searchToken=858sogt2izud1zwltfuemoj0u>
+
+---
+
+tips:
+
+- if getting `nan` during training, try increasing the data scale or decreasing the learning rate
+- if the training doesn't appear to work (no epochs are reported) you may need to decrease the batch size

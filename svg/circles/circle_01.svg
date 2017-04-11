@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="744.09448"
+   height="1052.3622"
+   id="svg2"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="circle.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="942"
+     inkscape:window-height="1022"
+     id="namedview7"
+     showgrid="false"
+     inkscape:zoom="0.63429569"
+     inkscape:cx="376.34952"
+     inkscape:cy="708.90265"
+     inkscape:window-x="12"
+     inkscape:window-y="12"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <defs
+     id="defs4" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     transform="translate(17.34207,0)"
+     style="fill:none;stroke:#2d2d2d;stroke-width:0.05;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+     d="m 44.14345,33.909733 c 0,13.931288 -11.293541,25.224829 -25.224829,25.224829 -13.9312882,0 -25.2248287,-11.293541 -25.2248287,-25.224829 0,-13.931288 11.2935405,-25.2248289 25.2248287,-25.2248289 13.931288,0 25.224829,11.2935409 25.224829,25.2248289 z"
+     id="path2835" />
+</svg>

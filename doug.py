@@ -32,7 +32,7 @@ def train(name, svg_dir, epochs, batch_size, scale, learning_rate, step_size):
         os.makedirs(dir)
 
     print('preparing data...')
-    dataf, steps = process_svgs(svg_dir, dataset_dir)
+    dataf, steps = process_svgs(svg_dir, dataset_dir, step_size)
     seq_length = min(steps) - (2+1)
     print('  seq length:', seq_length)
 

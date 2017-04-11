@@ -1,4 +1,5 @@
 import json
+from tqdm import tqdm
 from glob import glob
 from PIL import Image, ImageDraw
 
@@ -33,33 +34,36 @@ def bounds(steps):
     max_y = max(points, key=lambda p: p[1])[1]
     return max_x, min_x, max_y, min_y
 
+def render(steps, name):
+    # scale to fit
+    max_x, min_x, max_y, min_y = bounds(steps)
+    d_w, d_h = max_x - min_x, max_y - min_y
+    scale = min(
+        width/d_w if d_w > width else 1,
+        height/d_h if d_h > height else 1
+    )
+    d_w *= scale
+    d_h *= scale
+    start_x = width/2 - (min_x * scale + d_w/2)
+    start_y = height/2 - (min_y * scale + d_h/2)
+    pos = (start_x, start_y)
+
+    im = Image.new('RGB', (width, height))
+    draw = ImageDraw.Draw(im)
+    for (x_step, y_step, up) in steps:
+        next = (pos[0] + x_step * scale, pos[1] + y_step * scale)
+        if not up:
+            draw.line([pos, next], fill=(255, 255, 255))
+        pos = next
+    im.save('preview/{}.png'.format(name), 'PNG')
+
+
 if __name__ == '__main__':
     width, height = 2000, 2000
-    for fname in reversed(glob('drawings/*.json')):
+    for fname in tqdm(reversed(glob('drawings/*.json'))):
         name = fname.split('/')[-1].split('.')[0]
         steps = json.load(open(fname, 'r'))
-
-        # scale to fit
-        max_x, min_x, max_y, min_y = bounds(steps)
-        d_w, d_h = max_x - min_x, max_y - min_y
-        scale = min(
-            width/d_w if d_w > width else 1,
-            height/d_h if d_h > height else 1
-        )
-        d_w *= scale
-        d_h *= scale
-        start_x = width/2 - (min_x * scale + d_w/2)
-        start_y = height/2 - (min_y * scale + d_h/2)
-        pos = (start_x, start_y)
-
-        im = Image.new('RGB', (width, height))
-        draw = ImageDraw.Draw(im)
-        for (x_step, y_step, up) in steps:
-            next = (pos[0] + x_step * scale, pos[1] + y_step * scale)
-            if not up:
-                draw.line([pos, next], fill=(255, 255, 255))
-            pos = next
-        im.save('preview/{}.png'.format(name), 'PNG')
+        render(steps, name)
 
     els = ['<img src="{}">'.format(im.replace('preview/', '')) for im in glob('preview/*.png')]
     html = templ.format(html='\n'.join(els))
