@@ -7,6 +7,10 @@ First you have to train a drawing model:
     # example
     ./doug.py train calligraphy calligraphy_svgs
 
+You might get an error if the `batch_size` is too small. When the neural network is preparing to train it will output the number of available batches (`batches`) and the specified batch size (`batch size`). If `batch size > batches` then you will get this error. To fix it, re-run the command with a smaller batch size, e.g.:
+
+    ./doug.py train calligraphy calligraphy_svgs --batch_size 16
+
 Then you can use that model to generate drawing data:
 
     # after training a model
