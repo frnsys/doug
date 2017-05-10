@@ -21,6 +21,12 @@ Then you can use that model to generate drawing data:
 
 To view a preview drawn from the JSON stroke data, open `preview.html`. Append `#filename.json` to it to load a particular file in the `drawings` folder. If you don't specify a file, it will try to load `drawings/0000.json`.
 
+# converting json to svg
+
+If you need to convert a JSON file of steps to SVG, you can use `json2svg.py`. For example:
+
+    ./json2svg.py test.json
+
 ---
 
 <https://commons.wikimedia.org/w/index.php?title=Special:Search&limit=500&offset=0&profile=default&search=line+drawing+svg&searchToken=858sogt2izud1zwltfuemoj0u>
